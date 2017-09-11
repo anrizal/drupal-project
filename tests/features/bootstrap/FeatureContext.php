@@ -73,7 +73,7 @@ protected $nodes = [];
      * | title | News title |
      * | body  | Body text. |
      *
-     * @Given the following :type:
+     * @Given the following :type article:
      */
     public function givenNewsArticle(TableNode $news_table, $type) {
         $values = $news_table->getRowsHash();
@@ -88,10 +88,10 @@ protected $nodes = [];
      * | title      | body       |
      * | News title | Body text. |
      *
-     * @Given the following :type: */
-    public function givenNewsArticles(TableNode $news_table, $type) {
+     * @Given the following :types articles: */
+    public function givenNewsArticles(TableNode $news_table, $types) {
         foreach ($news_table->getColumnsHash() as $values) {
-            $values['type'] = $type;
+            $values['type'] = $types;
             $node = \Drupal\node\Entity\Node::create($values);
             $node ->save();
             $this->nodes[] = $node;

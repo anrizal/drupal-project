@@ -5,7 +5,7 @@ Feature: News Creation
   I want to make sure only I can create article
 
 Scenario: Anonymous user can see the news overview
-  Given the following news_article:
+  Given the following news_article articles:
 #    | title     | Article 1           |
 #    | body      | The first article.  |
     | title     | body                |
