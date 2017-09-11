@@ -5,6 +5,8 @@
  * Contains \FeatureContext.
  */
 
+use Behat\Gherkin\Node\TableNode;
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 
@@ -12,7 +14,10 @@ use Drupal\DrupalExtension\Context\RawDrupalContext;
  * Defines generic step definitions.
  */
 class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext {
-
+    /**
+     * @var \Drupal\node\NodeInterface[]
+     */
+protected $nodes = [];
   /**
    * Checks that a 403 Access Denied error occurred.
    *
@@ -52,4 +57,53 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
     $this->assertSession()->elementNotExists('css', "img[src$='.$extension'][src*='$filename']");
   }
 
+
+    /**
+     * @Then I should see :number news article
+     */
+    public function assertNewsArticleCount($number)
+    {
+        $this->assertSession()->elementsCount('css', 'div.news-article', $number);
+    }
+
+    /**
+     * Creates a news article.
+     *
+     * Table format:
+     * | title | News title |
+     * | body  | Body text. |
+     *
+     * @Given the following :type:
+     */
+    public function givenNewsArticle(TableNode $news_table, $type) {
+        $values = $news_table->getRowsHash();
+        $values['type'] = $type;
+        \Drupal\node\Entity\Node::create($values)->save();
+    }
+
+    /**
+     * Creates news articles.
+     *
+     * Table format:
+     * | title      | body       |
+     * | News title | Body text. |
+     *
+     * @Given the following :type: */
+    public function givenNewsArticles(TableNode $news_table, $type) {
+        foreach ($news_table->getColumnsHash() as $values) {
+            $values['type'] = $type;
+            $node = \Drupal\node\Entity\Node::create($values);
+            $node ->save();
+            $this->nodes[] = $node;
+        }
+    }
+
+    /**
+     * @AfterScenario
+     */
+    protected function cleanupNodes() {
+        foreach ($this->nodes as $node) {
+            $node->delete();
+        }
+    }
 }
