@@ -13,8 +13,7 @@ use Drupal\DrupalExtension\Context\RawDrupalContext;
 /**
  * Defines generic step definitions.
  */
-class FeatureContext extends RawDrupalContext
-{
+class FeatureContext extends RawDrupalContext {
     /**
      * @var \Drupal\node\NodeInterface[]
      */
@@ -25,8 +24,7 @@ class FeatureContext extends RawDrupalContext
      *
      * @return array
      */
-    protected static function newsFieldAliases()
-    {
+    protected static function newsFieldAliases() {
         return [
             'title' => 'title',
             'body' => 'body',
@@ -40,8 +38,7 @@ class FeatureContext extends RawDrupalContext
      *
      * @Then I should get an access denied error
      */
-    public function assertAccessDenied()
-    {
+    public function assertAccessDenied() {
         $this->assertSession()->statusCodeEquals(403);
     }
 
@@ -50,8 +47,7 @@ class FeatureContext extends RawDrupalContext
      *
      * @Then I (should )see the image :filename
      */
-    public function assertImagePresent($filename)
-    {
+    public function assertImagePresent($filename) {
         // Drupal appends an underscore and a number to the filename when duplicate
         // files are uploaded, for example when a test is run more than once.
         // We split up the filename and extension and match for both.
@@ -66,8 +62,7 @@ class FeatureContext extends RawDrupalContext
      *
      * @Then I should not see the image :filename
      */
-    public function assertImageNotPresent($filename)
-    {
+    public function assertImageNotPresent($filename) {
         // Drupal appends an underscore and a number to the filename when duplicate
         // files are uploaded, for example when a test is run more than once.
         // We split up the filename and extension and match for both.
@@ -81,8 +76,7 @@ class FeatureContext extends RawDrupalContext
     /**
      * @Then I should see :number news article
      */
-    public function assertNewsArticleCount($number)
-    {
+    public function assertNewsArticleCount($number) {
         $this->assertSession()->elementsCount('css', 'div.news-article', $number);
     }
 
@@ -95,8 +89,7 @@ class FeatureContext extends RawDrupalContext
      *
      * @Given the following :type article:
      */
-    public function givenNewsArticle(TableNode $news_table, $type)
-    {
+    public function givenNewsArticle(TableNode $news_table, $type) {
         $values = $news_table->getRowsHash();
         $values['type'] = $type;
         \Drupal\node\Entity\Node::create($values)->save();
@@ -111,8 +104,7 @@ class FeatureContext extends RawDrupalContext
      *
      * @Given the following :types articles:
      */
-    public function givenNewsArticles(TableNode $news_table, $types)
-    {
+    public function givenNewsArticles(TableNode $news_table, $types) {
         $aliases = self::newsFieldAliases();
 
         foreach ($news_table->getColumnsHash() as $values) {
@@ -127,8 +119,7 @@ class FeatureContext extends RawDrupalContext
     /**
      * @AfterScenario
      */
-    protected function cleanupNodes()
-    {
+    protected function cleanupNodes() {
         foreach ($this->nodes as $node) {
             $node->delete();
         }
